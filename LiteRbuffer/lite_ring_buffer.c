@@ -110,7 +110,7 @@ uint8_t lbc_read_data(lbf_chapter_t *lbc, void *out_data, uint32_t *out_length)
         return LBF_E_NOT_OK;
 
     data_len = lbc->chapter_buf[lbc->chapter_rid];
-    if (out_length != NULL)
+    if (out_length != LBF_NULL)
         *out_length = data_len;
     lbc->chapter_rid = (lbc->chapter_rid + 1) % lbc->chapter_max_num;
     lbc->chapter_full = 0;
