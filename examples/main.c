@@ -25,12 +25,10 @@
 
 /*============================ GLOBAL VARIABLES ==============================*/
 
-#define BASE_SIZE 512
-#define CHAPTER_SIZE 4
+#define BASE_DATA_SIZE 512
+#define CHAPTER_SIZE   4
 
-static uint8_t buffer_base[BASE_SIZE];
-static uint32_t buffer_chapter[CHAPTER_SIZE];
-static lbf_chapter_t rbc;
+DECLARE_LBC_BUFFER(rbc, BASE_DATA_SIZE, CHAPTER_SIZE);
 
 /*========================== FUNCTION PROTOTYPES =============================*/
 
@@ -46,7 +44,7 @@ int main(int argc, char *argv[])
     uint8_t rd_data[32];
     uint32_t num = 0;
 
-    lbc_init(&rbc, buffer_base, BASE_SIZE, buffer_chapter, CHAPTER_SIZE);
+    LBC_BUFFER_INIT(rbc, BASE_DATA_SIZE, CHAPTER_SIZE);
 
     lbc_write_data(&rbc, "string1", 8);
     lbc_write_data(&rbc, "string2", 8);
