@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
     num = lbc_get_chapter_number(&rbc);
     for (uint32_t i = 0; i < num; i++)
     {
-        lbc_read_data(&rbc, rd_data, NULL);
+        lbc_read_data(&rbc, rd_data, NULL, sizeof(rd_data));
         printf("%s\r\n", rd_data);
     }
 

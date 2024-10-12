@@ -32,47 +32,70 @@ extern "C" {
 #include <stdbool.h>
 
 /*========================= PERIPHERAL DECLARATION ===========================*/
-#define LITE_RING_BUFFER_VERSION ("0.2.0")
+#define LITE_RING_BUFFER_VERSION ("0.3.1")
 
 /*============================ TYPE DEFINITIONS ==============================*/
 #define LBF_NULL     ((void *)0)
-#define LBF_MAX_SIZE 0xFFFFFFFF
+#define LBF_MAX_SIZE (0xFFFFFFFFu)
+#define LBF_MIN_SIZE (0x02u)
 
-#define LBF_E_OK                 0
-#define LBF_E_NOT_OK             1
-#define LBF_E_LBC_NO_HANDLE      2
-#define LBF_E_LBN_NO_HANDLE      3
-#define LBF_E_DBUF_NUL           4
-#define LBF_E_DBUF_SIZE_EXMINI   5
-#define LBF_E_DBUF_SIZE_EXMAXI   6
-#define LBF_E_CBUF_NUL           7
-#define LBF_E_CBUF_SIZE_EXMINI   8
-#define LBF_E_CBUF_SIZE_EXMAXI   9
-#define LBF_E_DBUF_NOSPACE       10
-#define LBF_E_CBUF_NOSPACE       11
-#define LBF_E_DBUF_NOENOUGH_DATA 12
-#define LBF_E_CBUF_NOENOUGH_DATA 13
+#define LBF_E_OK     (0u)
+#define LBF_E_NOT_OK (1u)
+
+#define LBF_E_LBN_NO_HANDLE      (2u)
+#define LBF_E_DBUF_NUL           (3u)
+#define LBF_E_DBUF_SIZE_EXMINI   (4u)
+#define LBF_E_DBUF_SIZE_EXMAXI   (5u)
+#define LBF_E_DBUF_NOSPACE       (6u)
+#define LBF_E_DBUF_NOENOUGH_DATA (7u)
+
+#define LBF_E_LBC_NO_HANDLE      (18u)
+#define LBF_E_CBUF_NUL           (19u)
+#define LBF_E_CBUF_SIZE_EXMINI   (20u)
+#define LBF_E_CBUF_SIZE_EXMAXI   (21u)
+#define LBF_E_CBUF_NOSPACE       (22u)
+#define LBF_E_CBUF_NOENOUGH_DATA (23u)
+
+#define LBF_E_LBQ_NO_HANDLE           (34u)
+#define LBF_E_QBUF_NUL                (35u)
+#define LBF_E_QBUF_SIZE_EXMINI        (36u)
+#define LBF_E_QBUF_SIZE_EXMAXI        (37u)
+#define LBF_E_QBUF_ELEMENT_ERROR_SIZE (38u)
+#define LBF_E_QBUF_ELEMENT_NUM_EXMINI (39u)
+#define LBF_E_QBUF_NOSPACE            (40u)
+#define LBF_E_QBUF_NOENOUGH_DATA      (41u)
 
 /*=========================== STRUCTURE DEFINES ==============================*/
 
-typedef struct LBF_NODE_STRU
+typedef struct LBF_NODE_CONTROL_STRU
 {
     uint32_t head;
     uint32_t tail;
-    uint8_t *data_buf;
     uint32_t used_len;
     uint32_t max_len;
-} LBF_NODE_ST, lbn_t;
+    uint8_t *data_buf;
+} lbncb_t;
 
-typedef struct LBF_CHAPTER_STRU
+typedef struct LBF_CHAPTER_CONTROL_STRU
 {
-    lbn_t base_handle;
-    bool chapter_full;
-    uint32_t chapter_rid;
-    uint32_t chapter_wid;
+    bool full;
+    lbncb_t base_handle;
+    uint32_t ridx;
+    uint32_t widx;
+    uint32_t chapter_maxnum;
     uint32_t *chapter_buf;
-    uint32_t chapter_max_num;
-} LBF_CHAPTER_ST, lbc_t;
+} lbccb_t;
+
+typedef struct LBF_QUEUE_CONTROL_STRU
+{
+    bool full;
+    uint32_t ridx;
+    uint32_t widx;
+    uint32_t element_size;
+    uint32_t element_maxnum;
+    uint32_t buf_maxsize;
+    void *buf;
+} lbqcb_t;
 
 #ifdef __cplusplus
 }
