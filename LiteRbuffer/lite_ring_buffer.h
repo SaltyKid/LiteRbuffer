@@ -24,7 +24,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/* PRQA S ALL EOF */ /* lite ring buffer */
 /*============================= INCLUDE FILES ================================*/
 #include "lite_ring_buffer_types.h"
 
@@ -62,6 +62,7 @@ extern uint8_t lbc_init(lbccb_t *lbc,
                         uint32_t data_buf_size,
                         uint32_t *chapter_buf_addr,
                         uint32_t chapter_num);
+extern uint8_t lbc_set_threshold_data_length(lbccb_t *lbc, uint32_t length);
 extern uint8_t lbc_write_data(lbccb_t *lbc, void *in_data, uint32_t length);
 extern uint8_t lbc_read_data(lbccb_t *lbc,
                              void *out_data,
@@ -84,6 +85,40 @@ extern uint8_t lbq_get_wbuf_noupdate(lbqcb_t *lbq, void **element);
 extern uint8_t lbq_get_rbuf_noupdate(lbqcb_t *lbq, void **element);
 extern uint8_t lbq_wbuf_update(lbqcb_t *lbq);
 extern uint8_t lbq_rbuf_update(lbqcb_t *lbq);
+
+extern uint8_t mbn_init(mbncb_t *mbn,
+                        uint8_t *buf_addr,
+                        uint32_t buf_size,
+                        uint32_t *multi_rid_list,
+                        uint32_t multi_rid_num);
+extern uint8_t mbn_write_data(mbncb_t *mbn, void *in_data, uint32_t length);
+extern uint8_t mbn_read_data(mbncb_t *mbn,
+                             uint32_t multi_rid,
+                             void *out_data,
+                             uint32_t length,
+                             uint32_t outbuf_size);
+extern uint32_t mbn_get_used_size(mbncb_t *mbn);
+extern uint32_t mbn_get_free_size(mbncb_t *mbn);
+
+extern uint8_t mbc_init(mbccb_t *mbc,
+                        uint8_t *data_buf_addr,
+                        uint32_t data_buf_size,
+                        uint32_t *chapter_buf_addr,
+                        uint32_t chapter_num,
+                        uint32_t *multi_datarid_list,
+                        uint32_t *multi_chaprid_list,
+                        uint32_t multi_rid_num);
+extern uint8_t mbc_set_threshold_data_length(mbccb_t *mbc, uint32_t length);
+extern uint8_t mbc_write_data(mbccb_t *mbc, void *in_data, uint32_t length);
+extern uint8_t mbc_read_data(mbccb_t *mbc,
+                             uint32_t multi_rid,
+                             void *out_data,
+                             uint32_t *out_length,
+                             uint32_t outbuf_size);
+extern bool mbc_chapter_is_full(mbccb_t *mbc);
+extern bool mbc_chapter_is_empty(mbccb_t *mbc, uint32_t multi_rid);
+extern uint32_t mbc_get_chapter_number(mbccb_t *mbc, uint32_t multi_rid);
+extern uint32_t mbc_get_data_free_size(mbccb_t *mbc);
 
 #ifdef __cplusplus
 }

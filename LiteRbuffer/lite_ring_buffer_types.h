@@ -26,7 +26,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+/* PRQA S ALL EOF */ /* lite ring buffer */
 /*============================= INCLUDE FILES ================================*/
 #include <stdint.h>
 #include <stdbool.h>
@@ -49,12 +49,13 @@ extern "C" {
 #define LBF_E_DBUF_NOSPACE       (6u)
 #define LBF_E_DBUF_NOENOUGH_DATA (7u)
 
-#define LBF_E_LBC_NO_HANDLE      (18u)
-#define LBF_E_CBUF_NUL           (19u)
-#define LBF_E_CBUF_SIZE_EXMINI   (20u)
-#define LBF_E_CBUF_SIZE_EXMAXI   (21u)
-#define LBF_E_CBUF_NOSPACE       (22u)
-#define LBF_E_CBUF_NOENOUGH_DATA (23u)
+#define LBF_E_LBC_NO_HANDLE        (18u)
+#define LBF_E_CBUF_NUL             (19u)
+#define LBF_E_CBUF_SIZE_EXMINI     (20u)
+#define LBF_E_CBUF_SIZE_EXMAXI     (21u)
+#define LBF_E_CBUF_NOSPACE         (22u)
+#define LBF_E_CBUF_NOENOUGH_DATA   (23u)
+#define LBF_E_CBUF_ERROR_THRESHOLD (24u)
 
 #define LBF_E_LBQ_NO_HANDLE           (34u)
 #define LBF_E_QBUF_NUL                (35u)
@@ -65,12 +66,30 @@ extern "C" {
 #define LBF_E_QBUF_NOSPACE            (40u)
 #define LBF_E_QBUF_NOENOUGH_DATA      (41u)
 
+#define LBF_E_MBN_NO_HANDLE       (50u)
+#define LBF_E_MNBUF_NUL           (51u)
+#define LBF_E_MNRDLIST_NUL        (52u)
+#define LBF_E_MNRDLIST_ERROR_NUM  (53u)
+#define LBF_E_MNBUF_SIZE_EXMINI   (54u)
+#define LBF_E_MNBUF_SIZE_EXMAXI   (55u)
+#define LBF_E_MNBUF_NOSPACE       (56u)
+#define LBF_E_MNBUF_NOENOUGH_DATA (57u)
+
+#define LBF_E_MBC_NO_HANDLE         (66u)
+#define LBF_E_MCBUF_NUL             (67u)
+#define LBF_E_MCRDLIST_NUL          (68u)
+#define LBF_E_MCBUF_SIZE_EXMINI     (69u)
+#define LBF_E_MCBUF_SIZE_EXMAXI     (70u)
+#define LBF_E_MCBUF_NOSPACE         (71u)
+#define LBF_E_MCBUF_NOENOUGH_DATA   (72u)
+#define LBF_E_MCBUF_ERROR_THRESHOLD (73u)
+
 /*=========================== STRUCTURE DEFINES ==============================*/
 
 typedef struct LBF_NODE_CONTROL_STRU
 {
-    uint32_t head;
-    uint32_t tail;
+    uint32_t ridx;
+    uint32_t widx;
     uint32_t used_len;
     uint32_t max_len;
     uint8_t *data_buf;
@@ -84,6 +103,7 @@ typedef struct LBF_CHAPTER_CONTROL_STRU
     uint32_t widx;
     uint32_t chapter_maxnum;
     uint32_t *chapter_buf;
+    uint32_t threshold_length;
 } lbccb_t;
 
 typedef struct LBF_QUEUE_CONTROL_STRU
@@ -96,6 +116,28 @@ typedef struct LBF_QUEUE_CONTROL_STRU
     uint32_t buf_maxsize;
     void *buf;
 } lbqcb_t;
+
+typedef struct LBF_MULTINODE_CONTROL_STRU
+{
+    uint32_t widx;
+    uint32_t used_len;
+    uint32_t max_len;
+    uint32_t *ridx;
+    uint32_t multi_maxnum;
+    uint8_t *data_buf;
+} mbncb_t;
+
+typedef struct LBF_MULTICHAPTER_CONTROL_STRU
+{
+    bool full;
+    mbncb_t base_handle;
+    uint32_t widx;
+    uint32_t *ridx;
+    uint32_t multi_maxnum;
+    uint32_t chapter_maxnum;
+    uint32_t *chapter_buf;
+    uint32_t threshold_length;
+} mbccb_t;
 
 #ifdef __cplusplus
 }
