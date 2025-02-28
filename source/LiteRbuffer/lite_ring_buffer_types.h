@@ -32,7 +32,7 @@ extern "C" {
 #include <stdbool.h>
 
 /*========================= PERIPHERAL DECLARATION ===========================*/
-#define LITE_RING_BUFFER_VERSION ("0.3.1")
+#define LITE_RING_BUFFER_VERSION ("0.5.0")
 
 /*============================ TYPE DEFINITIONS ==============================*/
 #define LBF_NULL     ((void *)0)
@@ -65,24 +65,6 @@ extern "C" {
 #define LBF_E_QBUF_ELEMENT_NUM_EXMINI (39u)
 #define LBF_E_QBUF_NOSPACE            (40u)
 #define LBF_E_QBUF_NOENOUGH_DATA      (41u)
-
-#define LBF_E_MBN_NO_HANDLE       (50u)
-#define LBF_E_MNBUF_NUL           (51u)
-#define LBF_E_MNRDLIST_NUL        (52u)
-#define LBF_E_MNRDLIST_ERROR_NUM  (53u)
-#define LBF_E_MNBUF_SIZE_EXMINI   (54u)
-#define LBF_E_MNBUF_SIZE_EXMAXI   (55u)
-#define LBF_E_MNBUF_NOSPACE       (56u)
-#define LBF_E_MNBUF_NOENOUGH_DATA (57u)
-
-#define LBF_E_MBC_NO_HANDLE         (66u)
-#define LBF_E_MCBUF_NUL             (67u)
-#define LBF_E_MCRDLIST_NUL          (68u)
-#define LBF_E_MCBUF_SIZE_EXMINI     (69u)
-#define LBF_E_MCBUF_SIZE_EXMAXI     (70u)
-#define LBF_E_MCBUF_NOSPACE         (71u)
-#define LBF_E_MCBUF_NOENOUGH_DATA   (72u)
-#define LBF_E_MCBUF_ERROR_THRESHOLD (73u)
 
 /*=========================== STRUCTURE DEFINES ==============================*/
 
