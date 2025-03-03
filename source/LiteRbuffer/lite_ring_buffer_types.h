@@ -48,6 +48,7 @@ extern "C" {
 #define LBF_E_DBUF_SIZE_EXMAXI   (5u)
 #define LBF_E_DBUF_NOSPACE       (6u)
 #define LBF_E_DBUF_NOENOUGH_DATA (7u)
+#define LBF_E_DBUF_NODATABUF     (8u)
 
 #define LBF_E_LBC_NO_HANDLE        (18u)
 #define LBF_E_CBUF_NUL             (19u)
@@ -56,6 +57,7 @@ extern "C" {
 #define LBF_E_CBUF_NOSPACE         (22u)
 #define LBF_E_CBUF_NOENOUGH_DATA   (23u)
 #define LBF_E_CBUF_ERROR_THRESHOLD (24u)
+#define LBF_E_CBUF_NODATABUF       (25u)
 
 #define LBF_E_LBQ_NO_HANDLE           (34u)
 #define LBF_E_QBUF_NUL                (35u)
@@ -65,6 +67,7 @@ extern "C" {
 #define LBF_E_QBUF_ELEMENT_NUM_EXMINI (39u)
 #define LBF_E_QBUF_NOSPACE            (40u)
 #define LBF_E_QBUF_NOENOUGH_DATA      (41u)
+#define LBF_E_QBUF_NODATABUF          (42u)
 
 /*=========================== STRUCTURE DEFINES ==============================*/
 

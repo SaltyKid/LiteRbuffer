@@ -19,6 +19,8 @@
  *   2024-09-10  |  v0.3.0     |  SaltyKid   |  Add a generic queue
  *   2024-10-12  |  v0.3.1     |  SaltyKid   |  Modify the data type
  *   2024-10-14  |  v0.4.0     |  SaltyKid   |  Add multiplexing rbuffer
+ *   2025-02-28  |  v0.5.0     |  SaltyKid   |  Remove multiplexing rbuffer
+ *   2025-03-03  |  v0.5.1     |  SaltyKid   |  Add rbuffer clear
  * -----------------------------------------------------------------------------
  ******************************************************************************/
 /* PRQA S ALL EOF */ /* lite ring buffer */
@@ -102,6 +104,34 @@ uint8_t lbq_init(lbqcb_t *lbq,
 }
 
 /*******************************************************************************
+ * @brief        Clear the lite queue buffer
+ *
+ * @param[in]    lbq: lbq handle
+ *
+ * @return       0 - LBF_E_OK
+ *               other - LBF_ERROR_CODE
+ ******************************************************************************/
+uint8_t lbq_clear(lbqcb_t *lbq)
+{
+    uint8_t ret = LBF_E_OK;
+
+    do
+    {
+        if (LBF_NULL == lbq)
+        {
+            ret = LBF_E_LBQ_NO_HANDLE;
+            break;
+        }
+
+        lbq->ridx = 0u;
+        lbq->widx = 0u;
+        lbq->full = false;
+    } while (0);
+
+    return ret;
+}
+
+/*******************************************************************************
  * @brief        Get the lite queue write buffer
  *
  * @param[in]    lbc: lbc handle
@@ -113,15 +143,35 @@ uint8_t lbq_init(lbqcb_t *lbq,
  ******************************************************************************/
 uint8_t lbq_get_wbuf(lbqcb_t *lbq, void **element)
 {
-    if (true == lbq_is_full(lbq))
-        return LBF_E_QBUF_NOSPACE;
+    uint8_t ret = LBF_E_OK;
 
-    *element =
-        (void *)(((uint8_t *)lbq->buf) + (lbq->widx * lbq->element_size));
-    lbq->widx = (lbq->widx + 1u) % lbq->element_maxnum;
-    lbq->full = lbq->widx == lbq->ridx;
+    do
+    {
+        if (LBF_NULL == lbq)
+        {
+            ret = LBF_E_LBQ_NO_HANDLE;
+            break;
+        }
 
-    return LBF_E_OK;
+        if (LBF_NULL == element)
+        {
+            ret = LBF_E_QBUF_NODATABUF;
+            break;
+        }
+
+        if (true == lbq_is_full(lbq))
+        {
+            ret = LBF_E_QBUF_NOSPACE;
+            break;
+        }
+
+        *element =
+            (void *)(((uint8_t *)lbq->buf) + (lbq->widx * lbq->element_size));
+        lbq->widx = (lbq->widx + 1u) % lbq->element_maxnum;
+        lbq->full = lbq->widx == lbq->ridx;
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
@@ -136,15 +186,36 @@ uint8_t lbq_get_wbuf(lbqcb_t *lbq, void **element)
  ******************************************************************************/
 uint8_t lbq_get_rbuf(lbqcb_t *lbq, void **element)
 {
-    if (true == lbq_is_empty(lbq))
-        return LBF_E_QBUF_NOENOUGH_DATA;
+    uint8_t ret = LBF_E_OK;
 
-    *element =
-        (void *)(((uint8_t *)lbq->buf) + (lbq->ridx * lbq->element_size));
-    lbq->ridx = (lbq->ridx + 1u) % lbq->element_maxnum;
-    lbq->full = false;
+    do
+    {
+        if (LBF_NULL == lbq)
+        {
+            ret = LBF_E_LBQ_NO_HANDLE;
+            break;
+        }
 
-    return LBF_E_OK;
+        if (LBF_NULL == element)
+        {
+            ret = LBF_E_QBUF_NODATABUF;
+            break;
+        }
+
+        if (true == lbq_is_empty(lbq))
+        {
+            ret = LBF_E_QBUF_NOENOUGH_DATA;
+            break;
+        }
+
+        *element =
+            (void *)(((uint8_t *)lbq->buf) + (lbq->ridx * lbq->element_size));
+        lbq->ridx = (lbq->ridx + 1u) % lbq->element_maxnum;
+        lbq->full = false;
+
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
@@ -159,13 +230,34 @@ uint8_t lbq_get_rbuf(lbqcb_t *lbq, void **element)
  ******************************************************************************/
 uint8_t lbq_get_wbuf_noupdate(lbqcb_t *lbq, void **element)
 {
-    if (true == lbq_is_full(lbq))
-        return LBF_E_QBUF_NOSPACE;
+    uint8_t ret = LBF_E_OK;
 
-    *element =
-        (void *)(((uint8_t *)lbq->buf) + (lbq->widx * lbq->element_size));
+    do
+    {
+        if (LBF_NULL == lbq)
+        {
+            ret = LBF_E_LBQ_NO_HANDLE;
+            break;
+        }
 
-    return LBF_E_OK;
+        if (LBF_NULL == element)
+        {
+            ret = LBF_E_QBUF_NODATABUF;
+            break;
+        }
+
+        if (true == lbq_is_full(lbq))
+        {
+            ret = LBF_E_QBUF_NOSPACE;
+            break;
+        }
+
+        *element =
+            (void *)(((uint8_t *)lbq->buf) + (lbq->widx * lbq->element_size));
+
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
@@ -180,13 +272,33 @@ uint8_t lbq_get_wbuf_noupdate(lbqcb_t *lbq, void **element)
  ******************************************************************************/
 uint8_t lbq_get_rbuf_noupdate(lbqcb_t *lbq, void **element)
 {
-    if (true == lbq_is_empty(lbq))
-        return LBF_E_QBUF_NOENOUGH_DATA;
+    uint8_t ret = LBF_E_OK;
 
-    *element =
-        (void *)(((uint8_t *)lbq->buf) + (lbq->ridx * lbq->element_size));
+    do
+    {
+        if (LBF_NULL == lbq)
+        {
+            ret = LBF_E_LBQ_NO_HANDLE;
+            break;
+        }
 
-    return LBF_E_OK;
+        if (LBF_NULL == element)
+        {
+            ret = LBF_E_QBUF_NODATABUF;
+            break;
+        }
+
+        if (true == lbq_is_empty(lbq))
+        {
+            ret = LBF_E_QBUF_NOENOUGH_DATA;
+            break;
+        }
+
+        *element =
+            (void *)(((uint8_t *)lbq->buf) + (lbq->ridx * lbq->element_size));
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
@@ -312,6 +424,39 @@ uint8_t lbc_init(lbccb_t *lbc,
 }
 
 /*******************************************************************************
+ * @brief        Clear the lite chapter buffer
+ *
+ * @param[in]    lbc: lbc handle
+ *
+ * @return       0 - LBF_E_OK
+ *               other - LBF_ERROR_CODE
+ ******************************************************************************/
+uint8_t lbc_clear(lbccb_t *lbc)
+{
+    uint8_t ret = LBF_E_OK;
+
+    do
+    {
+        if (LBF_NULL == lbc)
+        {
+            ret = LBF_E_LBC_NO_HANDLE;
+            break;
+        }
+
+        ret = lbn_clear(&(lbc->base_handle));
+        if (LBF_E_OK != ret)
+        {
+            break;
+        }
+        lbc->ridx = 0u;
+        lbc->widx = 0u;
+        lbc->full = false;
+    } while (0);
+
+    return ret;
+}
+
+/*******************************************************************************
  * @brief        Set minimum data threshold
  *
  * @param[in]    lbc: lbc handle
@@ -362,30 +507,39 @@ uint8_t lbc_write_data(lbccb_t *lbc, void *in_data, uint32_t length)
 {
     uint8_t ret = LBF_E_OK;
 
-    if (true != lbc_chapter_is_full(lbc))
+    do
     {
-        ret = lbn_write_data(&(lbc->base_handle), in_data, length);
-        if (LBF_E_OK == ret)
+        if ((0u == length) || (LBF_NULL == in_data))
         {
-            lbc->chapter_buf[lbc->widx] = length;
-            lbc->widx = (lbc->widx + 1u) % lbc->chapter_maxnum;
-            lbc->full = lbc->widx == lbc->ridx;
-            if ((0u < lbc->threshold_length) &&
-                (lbc->threshold_length >
-                 lbn_get_free_size(&(lbc->base_handle))))
+            ret = LBF_E_CBUF_NODATABUF;
+            break;
+        }
+
+        if (true != lbc_chapter_is_full(lbc))
+        {
+            ret = lbn_write_data(&(lbc->base_handle), in_data, length);
+            if (LBF_E_OK == ret)
+            {
+                lbc->chapter_buf[lbc->widx] = length;
+                lbc->widx = (lbc->widx + 1u) % lbc->chapter_maxnum;
+                lbc->full = lbc->widx == lbc->ridx;
+                if ((0u < lbc->threshold_length) &&
+                    (lbc->threshold_length >
+                     lbn_get_free_size(&(lbc->base_handle))))
+                {
+                    lbc->full = true;
+                }
+            }
+            else if (LBF_E_DBUF_NOSPACE == ret)
             {
                 lbc->full = true;
             }
         }
-        else if (LBF_E_DBUF_NOSPACE == ret)
+        else
         {
-            lbc->full = true;
+            ret = LBF_E_CBUF_NOSPACE;
         }
-    }
-    else
-    {
-        ret = LBF_E_CBUF_NOSPACE;
-    }
+    } while (0);
 
     return ret;
 }
@@ -409,22 +563,32 @@ uint8_t lbc_read_data(lbccb_t *lbc,
                       uint32_t outbuf_size)
 {
     uint8_t ret = LBF_E_OK;
-    uint32_t data_len = 0;
 
-    if (true != lbc_chapter_is_empty(lbc))
+    do
     {
-        data_len = lbc->chapter_buf[lbc->ridx];
-        if (LBF_NULL != out_length)
-            *out_length = data_len > outbuf_size ? outbuf_size : data_len;
-        lbc->ridx = (lbc->ridx + 1u) % lbc->chapter_maxnum;
-        lbc->full = false;
-        ret =
-            lbn_read_data(&(lbc->base_handle), out_data, data_len, outbuf_size);
-    }
-    else
-    {
-        ret = LBF_E_CBUF_NOENOUGH_DATA;
-    }
+        if (LBF_NULL == lbc)
+        {
+            ret = LBF_E_LBC_NO_HANDLE;
+            break;
+        }
+
+        if (true != lbc_chapter_is_empty(lbc))
+        {
+            uint32_t data_len = 0;
+            data_len = lbc->chapter_buf[lbc->ridx];
+            if (LBF_NULL != out_length)
+                *out_length = data_len > outbuf_size ? outbuf_size : data_len;
+            lbc->ridx = (lbc->ridx + 1u) % lbc->chapter_maxnum;
+            lbc->full = false;
+            ret = lbn_read_data(
+                &(lbc->base_handle), out_data, data_len, outbuf_size);
+        }
+        else
+        {
+            ret = LBF_E_CBUF_NOENOUGH_DATA;
+        }
+
+    } while (0);
 
     return ret;
 }
@@ -513,7 +677,7 @@ uint8_t lbn_init(lbncb_t *lbn, uint8_t *buf_addr, uint32_t buf_size)
             break;
         }
 
-        if (2 > buf_size)
+        if (LBF_MIN_SIZE > buf_size)
         {
             ret = LBF_E_DBUF_SIZE_EXMINI;
             break;
@@ -536,6 +700,34 @@ uint8_t lbn_init(lbncb_t *lbn, uint8_t *buf_addr, uint32_t buf_size)
 }
 
 /*******************************************************************************
+ * @brief        Clear the lite ringbuffer
+ *
+ * @param[in]    lbn: handle of ringbuffer lbn
+ *
+ * @return       0 - LBF_E_OK
+ *               other - LBF_ERROR_CODE
+ ******************************************************************************/
+uint8_t lbn_clear(lbncb_t *lbn)
+{
+    uint8_t ret = LBF_E_OK;
+
+    do
+    {
+        if (LBF_NULL == lbn)
+        {
+            ret = LBF_E_LBN_NO_HANDLE;
+            break;
+        }
+
+        lbn->ridx = 0u;
+        lbn->widx = 0u;
+        lbn->used_len = 0u;
+    } while (0);
+
+    return ret;
+}
+
+/*******************************************************************************
  * @brief        Write data to the lite ringbuffer
  *
  * @param[in]    lbn: lbn handle
@@ -549,10 +741,22 @@ uint8_t lbn_init(lbncb_t *lbn, uint8_t *buf_addr, uint32_t buf_size)
  ******************************************************************************/
 uint8_t lbn_write_data(lbncb_t *lbn, void *in_data, uint32_t length)
 {
-    if (length > (lbn->max_len - lbn->used_len))
-        return LBF_E_DBUF_NOSPACE;
-    else
+    uint8_t ret = LBF_E_OK;
+
+    do
     {
+        if ((0u == length) || (LBF_NULL == in_data))
+        {
+            ret = LBF_E_DBUF_NODATABUF;
+            break;
+        }
+
+        if (length > (lbn->max_len - lbn->used_len))
+        {
+            ret = LBF_E_DBUF_NOSPACE;
+            break;
+        }
+
         uint8_t *p_data = (uint8_t *)in_data;
         if (length > (lbn->max_len - lbn->widx))
         {
@@ -572,8 +776,9 @@ uint8_t lbn_write_data(lbncb_t *lbn, void *in_data, uint32_t length)
         }
         lbn->used_len += length;
 
-        return LBF_E_OK;
-    }
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
@@ -595,43 +800,69 @@ uint8_t lbn_read_data(lbncb_t *lbn,
                       uint32_t length,
                       uint32_t outbuf_size)
 {
-    uint32_t tmp_length = 0u;
+    uint8_t ret = LBF_E_OK;
 
-    if (length > lbn->used_len)
-        return LBF_E_DBUF_NOENOUGH_DATA;
-    else
+    do
     {
+        if (LBF_NULL == lbn)
+        {
+            ret = LBF_E_LBN_NO_HANDLE;
+            break;
+        }
+
+        if (0u == length)
+        {
+            ret = LBF_E_DBUF_NODATABUF;
+            break;
+        }
+
+        if (length > lbn->used_len)
+        {
+            ret = LBF_E_DBUF_NOENOUGH_DATA;
+            break;
+        }
+
         uint8_t *p_data = (uint8_t *)out_data;
+        uint32_t tmp_length = 0u;
         if (length > (lbn->max_len - lbn->ridx))
         {
             uint32_t write_size_a = 0u, write_size_b = 0u;
             write_size_a = lbn->max_len - lbn->ridx;
             write_size_b = length - write_size_a;
-            if (write_size_a > outbuf_size)
+            if (LBF_NULL != p_data)
             {
-                memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], outbuf_size);
-            }
-            else
-            {
-                memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], write_size_a);
-                tmp_length = outbuf_size - write_size_a;
-                tmp_length =
-                    write_size_b > tmp_length ? tmp_length : write_size_b;
-                memcpy(&p_data[write_size_a], &lbn->data_buf[0], tmp_length);
+                if (write_size_a > outbuf_size)
+                {
+                    memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], outbuf_size);
+                }
+                else
+                {
+                    memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], write_size_a);
+                    tmp_length = outbuf_size - write_size_a;
+                    tmp_length =
+                        write_size_b > tmp_length ? tmp_length : write_size_b;
+                    memcpy(
+                        &p_data[write_size_a], &lbn->data_buf[0], tmp_length);
+                }
             }
             lbn->ridx = write_size_b;
         }
         else
         {
-            memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], length);
+            if (LBF_NULL != p_data)
+            {
+                tmp_length = outbuf_size > length ? length : outbuf_size;
+                memcpy(&p_data[0], &lbn->data_buf[lbn->ridx], tmp_length);
+            }
             lbn->ridx += length;
             if (lbn->ridx == lbn->max_len)
                 lbn->ridx = 0u;
         }
         lbn->used_len -= length;
 
-        return LBF_E_OK;
-    }
+    } while (0);
+
+    return ret;
 }
 
 /*******************************************************************************
